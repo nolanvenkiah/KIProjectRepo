@@ -1,8 +1,10 @@
+#ignore these directories
 /.terraform/
-/.git
+.git**
+
+#ignore these file types
 *.DS_Store
 *._DS_Store
-credentials.tfvars
-subscription.tfvars
-terraform.tfstate
-terraform.tfstate.backup
+*.tfvars
+*.tfstate
+*.backup
