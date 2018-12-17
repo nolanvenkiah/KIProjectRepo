@@ -1,0 +1,12 @@
+azure_rm_virtualmachine:
+ azure_rm_resourcegroup: DemoRG
+ name: TestVM
+ vm_size: Standard_D1
+ admin_username: derazadmin
+ ssh_password_enabled: false
+ ssh_public_keys: "{{ ssh_keys }}"
+ image:
+   offer: CentOS
+   publisher: OpenLogic
+   sku: '7.1'
+   version: latest
