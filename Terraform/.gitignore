@@ -1,0 +1,7 @@
+/.terraform/
+/.git
+*.DS_Store
+*._DS_Store
+credentials.tfvars
+terraform.tfstate
+terraform.tfstate.backup
