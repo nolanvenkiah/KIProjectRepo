@@ -1,12 +1,15 @@
 /* -------------------------------------------------------
 These variables pertain the AWS Subscription
 ----------------------------------------------------------*/
-variable "access_key" {}
-variable "secret_key" {}
-variable "default_region" {}
+variable "aws_access_key" {}
+variable "aws_secret_key" {}
+variable "region" {}
 
 /*-------------------------------------------------------
-These variables pertain to the default VPC
+These variables pertain to the default VPC and network
 --------------------------------------------------------*/
-variable "vpc_tag_name" {}
+variable "environment_tag" {}
+variable "subnet1_cidr_block_range" {}
+variable "cidr_block_range" {}
+variable "availability_zone" {}
 

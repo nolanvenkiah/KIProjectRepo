@@ -1,18 +1,66 @@
 /* -------------------------------------------------------
-These parameters specify the AWS subscription being used
+These parameters specify the IAM account and region being used
 ----------------------------------------------------------*/
 provider "aws" {
-  access_key                = "${var.access_key}"
-  secret_key                = "${var.secret_key}"
+  access_key                = "${var.aws_access_key}"
+  secret_key                = "${var.aws_secret_key}"
   region                    = "${var.region}"
 }
 
 /* -------------------------------------------------------
-These parameters creates an AWS resource group
+These parameters creates an AWS VPC
 ----------------------------------------------------------*/
-resource "default_vpc" "default" {
-    tags                    = {
-        Name                = "var.vpc_tag_name"
-    }
-    
+resource "aws_vpc" "vpc" {
+  cidr_block                = "${var.cidr_block_range}"
+  enable_dns_support        = true
+  enable_dns_hostnames      = true
+  tags {
+    "Environment"           = "${var.environment_tag}"
+  }
+}
+
+/* -------------------------------------------------------
+These parameters creates the internet gateway for the VPC
+----------------------------------------------------------*/
+resource "aws_internet_gateway" "igw" {
+  vpc_id                    = "${aws_vpc.vpc.id}"
+  tags {
+    "Environment"           = "${var.environment_tag}"
+  }
+}
+
+/* -------------------------------------------------------
+These parameters creates the public subnet for the VPC
+----------------------------------------------------------*/
+resource "aws_subnet" "subnet_public" {
+  vpc_id                    = "${aws_vpc.vpc.id}"
+  cidr_block                = "${var.subnet1_cidr_block_range}"
+  map_public_ip_on_launch   = "true"
+  availability_zone         = "${var.availability_zone}"
+  tags {
+    "Environment"           = "${var.environment_tag}"
+    "Type"                  = "Public"
+  }
+}
+
+/* -------------------------------------------------------
+These parameters creates the public route table
+----------------------------------------------------------*/
+resource "aws_route_table" "rtb_public" {
+  vpc_id                    = "${aws_vpc.vpc.id}"
+  route {
+      cidr_block            = "0.0.0.0/0"
+      gateway_id            = "${aws_internet_gateway.igw.id}"
+  }
+  tags {
+    "Environment"           = "${var.environment_tag}"
+  }
+}
+
+/* -------------------------------------------------------
+These parameters creates the public route table association
+----------------------------------------------------------*/
+resource "aws_route_table_association" "rta_subnet_public" {
+  subnet_id                 = "${aws_subnet.subnet_public.id}"
+  route_table_id            = "${aws_route_table.rtb_public.id}"
 }
